@@ -275,3 +275,77 @@ img.user-detail {
     font-style:italic;
     color:#ccc;
 }
+
+
+
+
+/* ADD */
+.post_item {
+    /* display: flex; */
+    /* flex-direction: row; */
+    margin: 20px;
+    background-color: #FAF8F1;
+    padding: 20px;
+    border-radius: 20px;
+    width: 600px;
+}
+
+.post_item_user {
+    display: flex;
+    flex-direction: row;    
+}
+.post_item_avatar{
+    /* display: flexbox; */
+}
+.post_item_user_avatar img{
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 50px;
+}
+
+.post_item_user_name {
+    padding-left: 20px;
+}
+
+.post_item_user_name p{
+    /* display: flexbox; */
+    font-family: Garamond, serif;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.post_item_user_created {
+    padding-left: 50px;
+}
+.post_item_user_created p {
+    font-family: Garamond, serif;
+    font-size: 18px;
+}
+
+.post_item_thumbnail img{
+    max-width: 150px;
+    max-height: 150px;
+}
+
+
+.list_tag {
+    display: flex;
+    flex-direction: row;    
+}
+
+.tag_item {
+    background-color: #ADE792;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10%;
+    
+}
+
+.tag_manage {
+
+}
+
+.tag_manage_name {
+
+}
+

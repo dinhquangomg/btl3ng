@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Tạo Bài Đăng{% endblock title %}
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    {% comment %} {% url 'create_post' %} {% endcomment %}
+
+    {{ form.media }}
+    {{ form.as_p }}
+    {{form.data | safe | linebreaks}}
+    {% csrf_token %}
+    {% comment %} <input type="hidden" name="next" value="{{ next }}" /> {% endcomment %}
+    <p><input type="submit" value="Post"></p>
+  </form>
+{% endblock content %}

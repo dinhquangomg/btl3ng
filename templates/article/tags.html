@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Chủ đề{% endblock title %}
+{% block content %}
+<h1>Danh Sách Chủ Đề Đang Theo Dõi</h1>
+
+    {% for tag in tags %}
+        <div class="tag_manage">
+            <p>{{ tag.name }}</p>
+            <form action="{% url 'article:unfollow_tag' tag.name %}" method="get">
+                <input type="submit" value="Huỷ Theo Dõi">
+            </form>
+        </div>
+    {% endfor %}
+    
+{% endblock content %}
