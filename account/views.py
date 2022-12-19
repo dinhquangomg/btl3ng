@@ -13,6 +13,9 @@ from .models import Profile, Contact
 from .forms import LoginForm, UserRegistrationForm, \
                    UserEditForm, ProfileEditForm
 
+from article.models import Post
+from django.contrib.auth.models import User
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -40,6 +43,8 @@ def user_login(request):
 def dashboard(request):
     # Display all actions by default
     actions = Action.objects.exclude(user=request.user)
+    posts = Post.objects.filter(author=request.user.id)
+    tags = request.user.profile.tags.all()
     following_ids = request.user.following.values_list('id',
                                                        flat=True)
     if following_ids:
@@ -51,7 +56,9 @@ def dashboard(request):
     return render(request,
                   'account/dashboard.html',
                   {'section': 'dashboard',
-                   'actions': actions})
+                   'actions': actions,
+                   'posts':posts,
+                   'tags':tags})
 
 
 def register(request):

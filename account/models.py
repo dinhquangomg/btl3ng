@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from article.models import Tag
+from article.models import Tag, Post
 
 
 class Profile(models.Model):
@@ -9,6 +9,7 @@ class Profile(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     photo = models.ImageField(upload_to='users/%Y/%m/%d/', blank=True)
     tags = models.ManyToManyField(Tag)
+    bookmark = models.ManyToManyField(Post)
 
     def __str__(self):
         return f'Profile for user {self.user.username}'

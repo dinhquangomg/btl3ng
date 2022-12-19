@@ -3,6 +3,63 @@ from django.views.generic import ListView
 from .models import Post, Tag
 from django.contrib.auth.decorators import login_required
 from .forms import PostCreateForm
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.contrib.auth.models import User
+from random import sample
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.urls import reverse, reverse_lazy
+
+    
+
+@login_required
+def ajax_bookmark(requset):
+    posts = requset.user.profile.bookmark.all()
+    post_id = requset.GET.get('post_id')
+    user = requset.user
+    post = Post.objects.get(id=post_id)
+    if post in posts:
+        user.profile.bookmark.remove(post)
+    else:
+        user.profile.bookmark.add(post)
+    return JsonResponse({'message':'success'}, status=200)
+
+def demo(request):
+    print('haha')
+    if request.method=='GET':
+        i = request.GET['text']
+
+
+        return JsonResponse({'text':'quangdeptrai'}, status=200)
+
+def personal_page(requset):
+    pass
+
+
+@login_required
+def delete_bookmark(request, post_id):
+    user = request.user
+    post = Post.objects.get(id=post_id)
+    user.profile.bookmark.remove(post)
+    return redirect('article:bookmark')
+
+@login_required
+def add_bookmark(request, post_id):
+    user = request.user
+    post = Post.objects.get(id=post_id)
+    user.profile.bookmark.add(post)
+    return redirect('article:home')
+
+
+@login_required
+def bookmarks(request):
+    posts = request.user.profile.bookmark.all()
+    context = {'posts':posts}
+    return render(
+        request=request,
+        template_name='article/bookmark.html',
+        context=context
+    )
 
 
 @login_required
@@ -10,7 +67,9 @@ def tag(request):
     context = {'section':'tags'}
     user = request.user
     tags = user.profile.tags.all()
+    new_tags = Tag.objects.all()
     context['tags'] = tags
+    context['new_tags'] = new_tags
     return render(
         request=request,
         template_name='article/tags.html' ,
@@ -24,7 +83,16 @@ def unfollow_tag(requset, tag):
 
 def detail(request, id):
     post = Post.objects.get(pk=id)
-    return render(request, 'article/detail.html', context={'post':post})
+    posts_bookmark = request.user.profile.bookmark.all()
+    bookmark = True if post in posts_bookmark else False
+    tag = post.tag
+    more_posts = Post.objects.filter(tag=tag).exclude(id=post.id)
+    context = {
+        'post':post,
+        'more_posts':more_posts,
+        'bookmark': bookmark
+    }
+    return render(request, 'article/detail.html', context=context)
 
 @login_required
 def add_tag(request):
@@ -85,25 +153,55 @@ def post_create(request):
 
 # Create your views here.
 def home(request):
-    section = "home"
-    tags = request.user.profile.tags.all()
+
+    tags = Tag.objects.all()
+    random_tags = sample(list(tags), 10)
+    users = User.objects.all()
     posts = []
-    for tag in tags:
-        temp = Post.objects.filter(tag=tag)
-        posts.extend(temp)
+    context = {
+            'random_tags':random_tags,
+            'users':users,
+        }
 
-    if not len(posts):
+    page = request.GET.get('page', 1) 
+    if str(request.user) == 'AnonymousUser':
         posts = Post.objects.all()
+        paginator = Paginator(posts, 3)
+    else:
+        tags = request.user.profile.tags.all()
+        for tag in tags:
+            temp = Post.objects.filter(tag=tag)
+            posts.extend(temp)
 
-    context= {'section':section, 'posts':posts, 'tag':None}
-    if user := request.user:
-        tags = user.profile.tags.all()
+        if not len(posts):
+            posts = Post.objects.all()
+        
+        paginator = Paginator(posts, 3)
+
+        tags = request.user.profile.tags.all()
         context['tags'] = tags
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        page = 1
+        posts = paginator.page(page)
+    except EmptyPage:
+        page = paginator.num_pages
+        posts = paginator.page(page)
+
+    print(page)
+
+    context['posts'] = posts
+    context['page'] = page
+    print(page)
+    
+
     return render(
         request=request,
         template_name='article/home.html',
         context=context
     )
+
 
 def home_with_tag(request, tag):
     section = "home"

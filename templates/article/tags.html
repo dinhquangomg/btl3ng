@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Chủ đề{% endblock title %}
 {% block content %}
-<h1>Danh Sách Chủ Đề Đang Theo Dõi</h1>
 
+<h1>Danh Sách Chủ Đề Đang Theo Dõi</h1>
+<form action="{% url 'article:add_tag' %}" method="post">
+    <input type="text" name="tag" id="">
+    <input type="submit" value="Add Tag" id="submit_add_tag">
+    {% csrf_token %}
+</form>
     {% for tag in tags %}
         <div class="tag_manage">
             <p>{{ tag.name }}</p>
@@ -11,5 +16,14 @@
             </form>
         </div>
     {% endfor %}
+
+
+<h1>Danh Sách Chủ Đề Có Sẵn</h1>
+{% for  tag in new_tags %}
+        {% if tag not in tags %}
+            <p>{{ tag.name }}</p>
+        {% endif %}
+
+{% endfor %}
     
 {% endblock content %}

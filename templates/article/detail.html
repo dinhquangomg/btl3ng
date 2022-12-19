@@ -1,7 +1,76 @@
 {% extends 'base.html' %}
 {% block title %}Detail{% endblock title %}
 {% block content %}
+<div class="post-detail">
+    <div class="post-user">
+        <img src="{{ user.profile.photo.url }}" alt="">
+        <p>{{ post.author.username }}</p>
+        <i>{{ post.created }}</i>
+        <a href="#">
+            {% if bookmark %}
+                <img class="bookmark-link" data-catid="{{post.id}}" src="/media/icon/bookmark-done.png" alt="">
+            {% else %}
+                <img class="bookmark-link" data-catid="{{post.id}}" src="/media/icon/bookmark-white.png" alt="">
+            {% endif %}
+        </a>
+    </div>
     <h1>{{ post.title }}</h1>
     {{ post.content | safe }}
+    <hr>
+    <div class="more-from-author">
+        
+    </div>
+
+    <div class="more_posts">
+        {% if more_posts %}
+            <h3>Bài Viết Tương Tự</h3>
+            {% for post in more_posts %}
+            <div class="list-posts">
+                <div class="post-left">
+                    <div class="post-user">
+                        <img src="{{ user.profile.photo.url }}" alt="">
+                        <p>{{ post.author.username }}</p>
+                        <i>{{ post.created }}</i>
+                    </div>
+                    <div class="post-content">
+                        <a href="{% url 'article:post_detail' post.id %}">{{ post.title }}</a>
+                    </div>
+                    <div class="post-tool">
+                        <div class="post-tool-tag">
+                            {{ post.tag }}
+                        </div>
+                    </div>
+                </div>
+                <div class="post-right">
+                    <img src="{{ post.thumbnail.url }}" alt="">
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <a class="bookmark-link" id="like{{post.id}}" href="#" >Like</a>
+    
+</div>
+<script type="text/javascript">
+    $(".bookmark-link").click(function() {
+        var id;
+        id = $(this).attr("data-catid");
+        $.ajax({
+            type:"GET",
+            url:"{% url 'article:ajax_bookmark' %}",
+            data:{post_id:id},
+            success: function(response){
+                {% if bookmark %}
+                    $(".bookmark-link").attr("src", "/media/icon/bookmark-white.png")
+                {% else %}
+                    $(".bookmark-link").attr("src", "/media/icon/bookmark-done.png")
+                {% endif %}
+            },
+            
+        })
+    })
+</script>
+
+
 {% endblock content %}
 

@@ -3,10 +3,19 @@
 <html>
 <head>
   <title>{% block title %}{% endblock %}</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <link href="{% static "css/base.css" %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-  <div id="header">
+
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <!-- <div id="header">
     <span class="logo">TQH</span>
     {% if request.user.is_authenticated %}
     <ul class="menu">
@@ -28,8 +37,15 @@
       <li {% if section == "tags" %}class="selected"{% endif %}>
         <a href="{% url "article:tag_manager" %}">Chủ đề</a>
       </li>
-    </ul>
-  {% endif %}
+      <li {% if section == "chua co gi o day" %}class="selected"{% endif %}>
+        <a href="{% url 'article:bookmark' %}">Đã Lưu</a>
+      </li>
+    </ul> -->
+
+
+
+
+  <!-- {% endif %}
   <span class="user">
     {% if request.user.is_authenticated %}
       Hello {{ request.user.first_name }},
@@ -38,7 +54,46 @@
       <a href="{% url "login" %}">Log-in</a>
     {% endif %}
   </span>
-  </div>
+  </div> -->
+  <header>
+    <div class="logo">
+      <a href="{% url 'article:home' %}">TQH</a>
+    </div>
+    <div class="search">
+      <form action="#">
+          <input type="text"
+              placeholder=" Tìm Kiếm"
+              name="search">
+          </button>
+      </form>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="dropdown">
+      <img src="{{user.profile.photo.url}}" alt="">
+      <div class="dropdown-content">
+        <div class="dropdown-item">
+          <img src="/media/icon/user.png" alt="">
+          <a href="{% url 'dashboard' %}">Trang Cá Nhân</a>
+        </div>
+        <div class="dropdown-item">
+          <img src="/media/icon/bookmark-white.png" alt="">
+          <a href="{% url 'article:bookmark' %}">Bài Viết Đã Lưu</a>
+        </div>
+        <hr>
+        <div class="dropdown-item">
+          <img src="/media/icon/exit.png" alt="">
+          <a href="{% url 'logout' %}">Đăng Xuất</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="create_post">
+      <img src="/media/icon/contract.png" alt="">
+      <a href="{% url 'article:create' %}">Tạo Bài Viết</a>
+    </div>
+    {% endif %}
+  </header>
+
 
   {% if messages %}
     <ul class="messages">
@@ -77,6 +132,6 @@
       {% endblock %}
     });
   </script>
-
+  
 </body>
 </html>

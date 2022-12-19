@@ -3,8 +3,55 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-  <h1>Dashboard</h1>
-  <p>Welcome to your dashboard. You can <a href="{% url "edit" %}">edit your profile</a> or <a href="{% url "password_change" %}">change your password</a>.</p>
+
+<div class="container">
+  <div class="content">
+    <h2>Bài Viết Của Bạn</h2>
+    {% for post in posts %}
+      <div class="list-posts">
+        <div class="post-left">
+            <div class="post-user">
+                <img src="{{ user.profile.photo.url }}" alt="">
+                <p>{{ post.author.username }}</p>
+                <i>{{ post.created }}</i>
+            </div>
+            <div class="post-content">
+                <a href="{% url 'article:post_detail' post.id %}">{{ post.title }}</a>
+            </div>
+            <div class="post-tool">
+                <div class="post-tool-tag">
+                    {{ post.tag }}
+                </div>
+            </div>
+        </div>
+        <div class="post-right">
+            <img src="{{ post.thumbnail.url }}" alt="">
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="support">
+    <div class="profile">
+      <img src="{{ user.profile.photo.url }}" alt="">
+      <h3>{{ user.username }}</h3>
+      <a href="{% url 'edit' %}">Chỉnh Sửa Thông Tin</a>
+
+      <hr>
+    </div>
+    <div class="random_tag">
+      <h3>Chủ Đề Đang Theo Dõi</h3>
+      {% for tag in tags %}
+          <div class="post-tool-tag">
+              {{ tag.name }}
+          </div>
+      {% endfor %}
+  </div>
+  </div>
+</div>
+
+
+
+  <!-- <p>Welcome to your dashboard. You can <a href="{% url "edit" %}">edit your profile</a> or <a href="{% url "password_change" %}">change your password</a>.</p>
 
   {% with total_images_created=request.user.images_created.count %}
     <p>Welcome to your dashboard. You have bookmarked {{ total_images_created }} image{{ total_images_created|pluralize }}.</p>
@@ -19,5 +66,5 @@
     {% for action in actions %}
       {% include "actions/action/detail.html" %}
     {% endfor %}
-  </div>
+  </div> -->
 {% endblock %}

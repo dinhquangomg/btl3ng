@@ -1,49 +1,81 @@
 {% extends 'base.html' %}
 {% block title %}Home Page{% endblock title %}
 {% block content %}
-
-
-{% if tags %}
-    <div class="list_tag">
-    {% for tag in tags %}
-        <div class="tag_item">
-            <a href="{% url 'article:home_with_tag' tag.name %}">{{ tag.name }}</a>
+<div class="container">
+    <div class="content">
+        {% if user.is_authenticated %}
+            <div class="list-tags">
+                <a href="{% url 'article:tag_manager' %}">
+                    <img src="/media/icon/add.png" alt="">
+                </a>
+                {% for tag in tags %}
+                    <div class="tag-item">
+                        <a href="{% url 'article:home_with_tag' tag.name %}">{{tag.name}}</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+                
+        {% for post in posts %}
+            <div class="list-posts">
+                <div class="post-left">
+                    <div class="post-user">
+                        <img src="{{ user.profile.photo.url }}" alt="">
+                        <p>{{ post.author.username }}</p>
+                        <i>{{ post.created }}</i>
+                    </div>
+                    <div class="post-content">
+                        <a href="{% url 'article:post_detail' post.id %}">{{ post.title }}</a>
+                    </div>
+                    <div class="post-tool">
+                        <div class="post-tool-tag">
+                            {{ post.tag }}
+                        </div>
+                    </div>
+                </div>
+                <div class="post-right">
+                    <img src="{{ post.thumbnail.url }}" alt="">
+                </div>
+            </div>
+        {% endfor %}
+        <div class="pagination">
+            {% if posts.has_previous %}
+                <a href="?page={{ posts.previous_page_number }}">«</a>
+            {% endif %}
+                <a href="#">{{ posts.number }}</a>
+            {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">»</a>
+            {% endif %}
         </div>
-    {% endfor %}
-
     </div>
 
-{% endif %}
-
-<form action="{% url 'article:add_tag' %}" method="post">
-    <input type="text" name="tag" id="">
-    <input type="submit" value="Add Tag">
-    {% csrf_token %}
-</form>
-
-
-{% for post in posts %}
-    <div class="post_item">
-        <div class="post_item_user">
-            <div class="post_item_user_avatar">
-                <img src="{{ post.author.profile.photo.url }}" alt="">
-            </div>
-            <div class="post_item_user_name">
-                <p>{{ post.author.username }}</p>
-            </div>
-            <div class="post_item_user_created">
-                <p>{{ post.created }}</p>
-            </div>
+    <div class="support">
+        <div class="random_tag">
+            <h3>Gợi Ý Chủ Đề</h3>
+            {% for tag in random_tags %}
+                <div class="post-tool-tag">
+                    {{ tag.name }}
+                </div>
+            {% endfor %}
         </div>
-        <div class="post_item_content_title">
-            <h3><a href="{% url 'article:post_detail' post.id %}">{{ post.title }}</a></h3>
-            {% comment %} <a href="{% url 'article:home_with_tag' tag.name %}">{{ tag.name }}</a> {% endcomment %}
+        <hr>
+        <div class="top_user">
+            <h3>Người Dùng Nổi Bật</h3>
+            {% for user in users %}
+            <div class="post-user">
+                <img src="{{ user.profile.photo.url }}" alt="">
+                <p>{{ user.username }}</p>
+  
+            </div>
+            {% endfor %}
         </div>
-        <div class="post_item_thumbnail">
-            <img src="{{ post.thumbnail.url }}" alt="">
-        </div>
+        
     </div>
-{% endfor %}
+
+
+
+</div>
 
 
 {% endblock content %}
+    
