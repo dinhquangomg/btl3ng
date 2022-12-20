@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Detail{% endblock title %}
 {% block content %}
+<div class="container"></div>
 <div class="post-detail">
     <div class="post-user">
         <img src="{{ user.profile.photo.url }}" alt="">
@@ -45,10 +46,29 @@
                     <img src="{{ post.thumbnail.url }}" alt="">
                 </div>
             </div>
+
             {% endfor %}
         {% endif %}
     </div>
-    <a class="bookmark-link" id="like{{post.id}}" href="#" >Like</a>
+    <hr>
+    <div class="interactive">
+        <div class="interactive-bar">
+            <div class="interactive-bar-item">
+                {% if like %}
+                    <img id="like-link" src="/media/icon/heart-done.png" alt="">
+                {% else %}
+                    <img id="like-link" src="/media/icon/heart.png" alt="">
+                {% endif %}
+                <p id="number_like">{{ number_like }}</p>
+            </div>
+
+            <div class="interactive-bar-item">
+                <img src="/media/icon/chat.png" alt="">
+                <p>1000</p>
+            </div>
+            
+        </div>
+    </div>
     
 </div>
 <script type="text/javascript">
@@ -60,11 +80,33 @@
             url:"{% url 'article:ajax_bookmark' %}",
             data:{post_id:id},
             success: function(response){
-                {% if bookmark %}
+                if ($(".bookmark-link").attr("src")!="/media/icon/bookmark-white.png") {
                     $(".bookmark-link").attr("src", "/media/icon/bookmark-white.png")
-                {% else %}
+                } else {
                     $(".bookmark-link").attr("src", "/media/icon/bookmark-done.png")
-                {% endif %}
+                }
+                
+            },
+            
+        })
+    })
+
+    $("#like-link").click(function() {
+        var id;
+        id = $(this).attr("data-catid");
+        $.ajax({
+            type:"GET",
+            url:"{% url 'article:ajax_like' %}",
+            data:{post_id:{{post.id}}},
+            success: function(response){
+                if ($("#like-link").attr("src") != "/media/icon/heart.png") {
+                    $("#like-link").attr("src", "/media/icon/heart.png")
+                }
+                else {
+                    $("#like-link").attr("src", "/media/icon/heart-done.png")
+                }
+                $('#number_like').text(response.number_like)
+
             },
             
         })

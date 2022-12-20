@@ -656,3 +656,21 @@ header {
     border-radius: 150px;
     display: block;
   }
+
+
+  /* Interactive */
+
+.interactive-bar-item {
+    display: inline-block;
+    margin-left: 150px;
+}
+
+.interactive-bar-item p{
+    display: inline-block;
+}
+
+
+  .interactive-bar-item img{
+    width: 30px;
+    height: 30px;
+  }

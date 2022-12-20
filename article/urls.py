@@ -17,6 +17,7 @@ urlpatterns = [
     path('delete_bookmark/<int:post_id>/', views.delete_bookmark, name='delete_bookmark'),
     path('demo/', views.demo, name='demo'),
     path('ajax_bookmark/', views.ajax_bookmark, name='ajax_bookmark'),
+    path('ajax_like/', views.ajax_like, name='ajax_like'),
 
 
 ]

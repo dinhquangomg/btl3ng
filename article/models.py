@@ -22,6 +22,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     tag = models.ForeignKey(Tag, default=None, null=True, on_delete=models.CASCADE, blank=True)
+    likes = models.ManyToManyField(User)
 
     class Meta:
         ordering = ('-publish',)

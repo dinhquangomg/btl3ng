@@ -10,6 +10,20 @@ from random import sample
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse, reverse_lazy
 
+
+@login_required
+def ajax_like(requset):
+    post_id = requset.GET.get('post_id')
+    user = requset.user
+    post = Post.objects.get(id=post_id)
+    users_like = post.likes.all()
+    if user in users_like:
+        post.likes.remove(user)
+    else:
+        post.likes.add(user)
+    users_like = post.likes.all()
+    number_like = len(list(users_like))
+    return JsonResponse({'number_like':number_like}, status=200)
     
 
 @login_required
@@ -84,13 +98,19 @@ def unfollow_tag(requset, tag):
 def detail(request, id):
     post = Post.objects.get(pk=id)
     posts_bookmark = request.user.profile.bookmark.all()
+    users_like = post.likes.all()
+    user = request.user
     bookmark = True if post in posts_bookmark else False
+    like = True if user in users_like else False
     tag = post.tag
+    number_like = len(list(users_like))
     more_posts = Post.objects.filter(tag=tag).exclude(id=post.id)
     context = {
         'post':post,
         'more_posts':more_posts,
-        'bookmark': bookmark
+        'bookmark': bookmark,
+        'like': like,
+        'number_like':number_like,
     }
     return render(request, 'article/detail.html', context=context)
 
